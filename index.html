@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Acadêmico Pro - Final</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .login-screen {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .login-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 50px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            max-width: 400px;
+            width: 100%;
+            animation: slideUp 0.8s ease-out;
+        }
+
+        .login-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .login-subtitle {
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 16px;
+        }
+
+        .login-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 15px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px;
+            min-width: 150px;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+        
+        .qr-scanner-area-container { /* Renomeado de qr-scanner para qr-scanner-area-container */
+            margin: 20px auto;
+            padding: 20px;
+            border: 2px dashed #ccc;
+            border-radius: 15px;
+            display: none; /* Controlado por JS */
+            width:100%; 
+            max-width:350px;
+        }
+        #qr-reader {
+             width:100%;
+        }
+        #qr-reader-results {
+            margin-top:10px; 
+            color: green;
+            font-weight: bold;
+        }
+
+
+        .header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 20px 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .header h1 {
+            color: white;
+            font-size: clamp(20px, 4vw, 28px);
+            font-weight: 700;
+        }
+
+        .header-info {
+            color: rgba(255, 255, 255, 0.8);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .coins {
+            background: rgba(255, 215, 0, 0.2);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .nav-tabs {
+            display: flex;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 5px;
+            margin-bottom: 30px;
+            overflow-x: auto;
+        }
+
+        .nav-tab {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .nav-tab.active {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .nav-tab:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary { background: #6c757d; }
+        .btn-secondary:hover { box-shadow: 0 8px 20px rgba(108, 117, 125, 0.3); }
+        .btn-success { background: #28a745; }
+        .btn-success:hover { box-shadow: 0 8px 20px rgba(40, 167, 69, 0.3); }
+        .btn-danger { background: #dc3545; }
+        .btn-danger:hover { box-shadow: 0 8px 20px rgba(220, 53, 69, 0.3); }
+
+        .activity-item {
+            background: rgba(248, 249, 255, 0.8);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+            transition: all 0.3s ease;
+        }
+        .activity-item:hover { transform: translateX(5px); box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); }
+        .activity-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; }
+        .activity-title { font-weight: 600; color: #333; font-size: 16px; }
+        .activity-coins { background: linear-gradient(45deg, #ffd700, #ffed4e); color: #333; padding: 5px 12px; border-radius: 20px; font-weight: 600; font-size: 14px; }
+        .activity-description { color: #666; margin-bottom: 15px; line-height: 1.5; }
+
+        .status-badge { padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; text-transform: uppercase; }
+        .status-pending { background: #fff3cd; color: #856404; }
+        .status-completed { background: #d4edda; color: #155724; }
+        .status-validated { background: #d1ecf1; color: #0c5460; }
+        .status-approved { background: #d4edda; color: #155724; }
+        .status-rejected { background: #f8d7da; color: #721c24; }
+
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
+        .modal.active { display: flex; }
+        .modal-content { background: white; border-radius: 20px; padding: 30px; max-width: 500px; width: 100%; max-height: 90vh; overflow-y: auto; animation: slideUp 0.5s ease-out; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #eee; }
+        .modal-title { font-size: 20px; font-weight: 600; }
+        .close-btn { background: none; border: none; font-size: 24px; cursor: pointer; color: #aaa; }
+        .close-btn:hover { color: #333; }
+
+        .form-group { margin-bottom: 20px; }
+        .form-label { display: block; margin-bottom: 8px; font-weight: 600; color: #333; }
+        .form-input, .form-select, .form-textarea { width: 100%; padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 14px; transition: border-color 0.3s ease; }
+        .form-textarea { min-height: 80px; resize: vertical; }
+        .form-input:focus, .form-select:focus, .form-textarea:focus { outline: none; border-color: #667eea; }
+
+        .qr-code-display { text-align: center; padding: 20px; background: #f8f9fa; border-radius: 15px; margin: 20px 0; word-break: break-all; }
+        .qr-code-display h4 { margin-bottom: 10px; }
+
+        .gift-card { display: flex; background: white; border-radius: 15px; padding: 20px; margin-bottom: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); transition: all 0.3s ease; }
+        .gift-card:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(0,0,0,0.15); }
+        .gift-image { width: 80px; height: 80px; background: linear-gradient(45deg, #667eea, #764ba2); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 30px; margin-right: 20px; }
+        .gift-info { flex: 1; }
+        .gift-name { font-weight: 600; margin-bottom: 5px; color: #333; }
+        .gift-price { color: #667eea; font-weight: 600; margin-bottom: 5px; }
+        .gift-price::before { content: "💰 "; }
+        .gift-stock { color: #666; font-size: 14px; }
+
+        .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .stat-card { background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border-radius: 15px; padding: 20px; text-align: center; border: 1px solid rgba(255,255,255,0.3); }
+        .stat-number { font-size: 32px; font-weight: 700; color: #667eea; margin-bottom: 5px; }
+        .stat-label { color: #666; font-size: 14px; }
+
+        .hidden { display: none !important; }
+        .logout-btn { background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 8px 15px; border-radius: 10px; cursor: pointer; transition: all 0.3s ease; }
+        .logout-btn:hover { background: rgba(255,255,255,0.3); }
+
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        @media (max-width: 768px) {
+            .container { padding: 15px; }
+            .login-card { padding: 30px 20px; }
+            .header { text-align: center; }
+            .header-info { justify-content: center; margin-top: 15px; }
+            .cards-grid { grid-template-columns: 1fr; }
+            .gift-card { flex-direction: column; text-align: center; }
+            .gift-image { margin: 0 auto 15px; }
+            .activity-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+</head>
+<body>
+    <div id="loginScreen" class="login-screen">
+        <div class="login-card">
+            <h1 class="login-title">🎓 Sistema Acadêmico</h1>
+            <p class="login-subtitle">Escolha seu tipo de acesso</p>
+            
+            <button class="login-btn" onclick="showAdminLoginModal()">
+                👨‍💼 Administrador
+            </button>
+            
+            <button class="login-btn" onclick="activateQRScanner()">
+                📱 Aluno (Ler QR Code)
+            </button>
+            
+            <div id="qrScannerArea" class="qr-scanner-area-container">
+                <h3>📷 Leitor de QR Code</h3>
+                <p>Posicione o QR Code do aluno na câmera.</p>
+                <div id="qr-reader"></div>
+                <div id="qr-reader-results"></div>
+                <button id="stopQRScanBtn" class="btn btn-danger" style="display:none; margin-top:15px;" onclick="stopQRScanner()">Parar Leitura</button>
+            </div>
+            
+            <button class="login-btn" style="background: #777; font-size:0.8em; margin-top: 20px;" onclick="simulateQRScan()">
+                🔑 Simular Scan (Aluno João - Teste)
+            </button>
+        </div>
+    </div>
+
+    <div id="systemInterface" class="container hidden">
+        <header class="header">
+            <h1 id="headerTitle">🎓 Dashboard</h1>
+            <div class="header-info">
+                <div id="userInfo"></div>
+                <button class="logout-btn" onclick="logout()">🚪 Sair</button>
+            </div>
+        </header>
+
+        <nav class="nav-tabs" id="navTabs">
+            </nav>
+
+        <div id="tabsContent">
+            </div>
+    </div>
+
+    <div id="modal" class="modal" onclick="closeModalOutside(event)">
+        <div class="modal-content" id="modalInnerContent" onclick="event.stopPropagation()">
+            </div>
+    </div>
+
+    <script>
+        // Dados do sistema (simulando banco de dados)
+        let systemData = {
+            students: [
+                { id: 1, name: "João Silva", email: "joao@email.com", coins: 150, qrCode: "STUDENT-1716504028803-ABCDE" }, // Exemplo de QR Code gerado
+                { id: 2, name: "Maria Santos", email: "maria@email.com", coins: 200, qrCode: "STUDENT-1716504030000-FGHIJ" }
+            ],
+            activities: [
+                { id: 1, title: "Leitura do Capítulo 1", description: "Ler e resumir o primeiro capítulo.", coins: 20, studentId: 1, status: "pending" },
+                { id: 2, title: "Exercícios de Física", description: "Resolver os exercícios 1-10 da página 45.", coins: 30, studentId: 1, status: "completed" },
+                { id: 3, title: "Apresentação de História", description: "Preparar slides sobre a Revolução Francesa.", coins: 50, studentId: 2, status: "pending" }
+            ],
+            gifts: [
+                { id: 1, name: "Caneta Premium", price: 50, stock: 10, image: "🖊️" },
+                { id: 2, name: "Caderno Personalizado", price: 100, stock: 5, image: "📓" }
+            ],
+            redeemRequests: [],
+            currentUser: null,
+            userType: null,
+            nextStudentId: 3,
+            nextActivityId: 4,
+            nextGiftId: 3,
+            nextRedeemRequestId: 1
+        };
+
+        window.tabFunctions = {};
+        let html5QrCodeScanner = null; 
+
+        // ========== FUNÇÕES DE LOGIN E LOGOUT ==========
+        function showAdminLoginModal() {
+            const formHtml = `
+                <form onsubmit="handleAdminLogin(event)">
+                    <div class="form-group">
+                        <label for="adminUsername" class="form-label">Usuário:</label>
+                        <input type="text" id="adminUsername" class="form-input" value="admin" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="adminPassword" class="form-label">Senha:</label>
+                        <input type="password" id="adminPassword" class="form-input" value="admin" required>
+                    </div>
+                    <button type="submit" class="btn btn-success">Entrar</button>
+                </form>
+            `;
+            openModal("Login de Administrador", formHtml);
+        }
+
+        function handleAdminLogin(event) {
+            event.preventDefault();
+            const username = document.getElementById('adminUsername').value;
+            const password = document.getElementById('adminPassword').value;
+
+            if (username === 'admin' && password === 'admin') {
+                console.log("Login de administrador bem-sucedido.");
+                closeModal();
+                systemData.userType = 'admin';
+                systemData.currentUser = { id: 0, name: "Administrador", isAdmin: true };
+                showAdminInterface();
+                document.getElementById('loginScreen').classList.add('hidden');
+                document.getElementById('systemInterface').classList.remove('hidden');
+            } else {
+                alert("Usuário ou senha do administrador incorretos.");
+                console.warn("Tentativa de login de admin falhou.");
+            }
+        }
+        
+        function activateQRScanner() {
+            console.log("Ativando scanner de QR Code...");
+            const qrScannerArea = document.getElementById('qrScannerArea');
+            const stopBtn = document.getElementById('stopQRScanBtn');
+            
+            if(!qrScannerArea || !stopBtn) {
+                console.error("Elementos da área do scanner não encontrados.");
+                return;
+            }
+            qrScannerArea.style.display = 'block';
+            stopBtn.style.display = 'inline-block';
+
+            if (html5QrCodeScanner && html5QrCodeScanner.isScanning) {
+                 console.log("Scanner já estava ativo. Parando antes de reiniciar.");
+                 stopQRScanner(); // Garante que pare o anterior
+            }
+             // Timeout para garantir que o DOM está pronto e o scanner anterior parou.
+            setTimeout(() => {
+                try {
+                    html5QrCodeScanner = new Html5Qrcode("qr-reader");
+                    const qrCodeSuccessCallback = (decodedText, decodedResult) => {
+                        console.log(`QR Code lido: ${decodedText}`);
+                        document.getElementById('qr-reader-results').innerText = `QR Code detectado! Processando...`;
+                        
+                        const student = systemData.students.find(s => s.qrCode === decodedText);
+                        if (student) {
+                            console.log("Aluno encontrado:", student);
+                            systemData.currentUser = student;
+                            systemData.userType = 'student';
+                            
+                            stopQRScanner(); 
+
+                            showStudentInterface();
+                            document.getElementById('loginScreen').classList.add('hidden');
+                            document.getElementById('systemInterface').classList.remove('hidden');
+                            
+                            const resultsDiv = document.getElementById('qr-reader-results');
+                            if(resultsDiv) resultsDiv.innerText = '';
+
+                        } else {
+                            console.warn("Nenhum aluno encontrado com este QR Code:", decodedText);
+                            const resultsDiv = document.getElementById('qr-reader-results');
+                            if(resultsDiv) resultsDiv.innerText = `Aluno não encontrado. Tente novamente.`;
+                        }
+                    };
+
+                    const config = { fps: 10, qrbox: { width: 250, height: 250 }, rememberLastUsedCamera: true };
+
+                    html5QrCodeScanner.start({ facingMode: "environment" }, config, qrCodeSuccessCallback, (errorMessage) => {})
+                    .catch((err) => {
+                        console.error("Erro ao iniciar o scanner de QR Code:", err);
+                        const resultsDiv = document.getElementById('qr-reader-results');
+                        if(resultsDiv) resultsDiv.innerText = `Erro ao iniciar câmera. Verifique as permissões.`;
+                        // Não esconder a área para o usuário ver a mensagem de erro
+                        // if(stopBtn) stopBtn.style.display = 'none'; // Opcional: esconder botão se falhar em iniciar
+                    });
+                } catch (e) {
+                    console.error("Exceção ao criar Html5Qrcode:", e);
+                    const resultsDiv = document.getElementById('qr-reader-results');
+                    if(resultsDiv) resultsDiv.innerText = `Erro crítico ao configurar o leitor.`;
+                }
+
+            }, 100); // Pequeno delay
+        }
+
+        function stopQRScanner() {
+            const qrScannerArea = document.getElementById('qrScannerArea');
+            const stopBtn = document.getElementById('stopQRScanBtn');
+            const resultsDiv = document.getElementById('qr-reader-results');
+
+            if (html5QrCodeScanner && html5QrCodeScanner.isScanning) {
+                html5QrCodeScanner.stop().then(() => {
+                    console.log("Scanner QR parado com sucesso.");
+                    // html5QrCodeScanner.clear(); // Cuidado: clear() pode remover o elemento 'qr-reader' do DOM se não for usado corretamente.
+                }).catch((err) => {
+                    console.error("Falha ao parar o scanner QR:", err);
+                }).finally(() => {
+                     // Garante que a UI seja escondida e o estado resetado
+                    if(qrScannerArea) qrScannerArea.style.display = 'none';
+                    if(stopBtn) stopBtn.style.display = 'none';
+                    if(resultsDiv) resultsDiv.innerText = '';
+                    // html5QrCodeScanner = null; // Não resetar a instância aqui, pois pode ser reutilizada
+                });
+            } else { // Se não estava escaneando, apenas esconde a UI
+                 if(qrScannerArea) qrScannerArea.style.display = 'none';
+                 if(stopBtn) stopBtn.style.display = 'none';
+                 if(resultsDiv) resultsDiv.innerText = '';
+            }
+        }
+
+        function simulateQRScan() { // Mantido para testes
+            console.log(" Iniciando simulateQRScan.");
+            const student = systemData.students.find(s => s.id === 1); 
+            if (student) {
+                systemData.currentUser = student;
+                systemData.userType = 'student';
+                showStudentInterface();
+                document.getElementById('loginScreen').classList.add('hidden');
+                document.getElementById('systemInterface').classList.remove('hidden');
+                stopQRScanner(); // Garante que o scanner real seja parado se estiver ativo
+            } else {
+                alert("Erro: Aluno de simulação (ID 1) não encontrado.")
+            }
+        }
+
+        function logout() {
+            console.log("Iniciando logout...");
+            if (html5QrCodeScanner && html5QrCodeScanner.isScanning) {
+                stopQRScanner();
+            }
+            systemData.currentUser = null;
+            systemData.userType = null;
+            document.getElementById('loginScreen').classList.remove('hidden');
+            document.getElementById('systemInterface').classList.add('hidden');
+            
+            const qrScannerArea = document.getElementById('qrScannerArea');
+            if(qrScannerArea) qrScannerArea.style.display = 'none';
+            const stopBtn = document.getElementById('stopQRScanBtn');
+            if(stopBtn) stopBtn.style.display = 'none';
+            const resultsDiv = document.getElementById('qr-reader-results');
+            if(resultsDiv) resultsDiv.innerText = '';
+            
+            document.getElementById('navTabs').innerHTML = ''; 
+            document.getElementById('tabsContent').innerHTML = ''; 
+            window.tabFunctions = {}; 
+            console.log("Logout realizado. Interface limpa.");
+        }
+
+        // ========== RENDERIZAÇÃO DE INTERFACES GERAIS ==========
+        function showAdminInterface() {
+            console.log(" Iniciando showAdminInterface.");
+            document.getElementById('headerTitle').textContent = '👨‍💼 Dashboard Administrador';
+            document.getElementById('userInfo').innerHTML = `<span>Bem-vindo, ${systemData.currentUser.name}!</span>`;
+            const tabs = [
+                { id: 'students', title: '👥 Alunos', content: renderStudentsTab },
+                { id: 'activities', title: '📋 Atividades', content: renderActivitiesTab },
+                { id: 'gifts', title: '🎁 Brindes', content: renderGiftsTab },
+                { id: 'requests', title: '🔔 Solicitações', content: renderRequestsTab },
+                { id: 'performance', title: '📊 Performance', content: renderPerformanceTab }
+            ];
+            renderTabs(tabs);
+            showTab('students');
+        }
+
+        function showStudentInterface() {
+            console.log(" Iniciando showStudentInterface.");
+            const student = systemData.currentUser;
+            if (!student) { logout(); return; }
+            document.getElementById('headerTitle').textContent = '🎓 Meu Dashboard';
+            document.getElementById('userInfo').innerHTML = `<span>Olá, ${student.name}!</span><div class="coins">💰 ${student.coins} coins</div>`;
+            const tabs = [
+                { id: 'myActivities', title: '🎯 Minhas Atividades', content: renderMyActivitiesTab },
+                { id: 'store', title: '🛒 Loja de Brindes', content: renderStoreTab },
+                { id: 'myRequests', title: '📜 Meus Pedidos', content: renderMyRequestsTab },
+                { id: 'profile', title: '👤 Meu Perfil', content: renderProfileTab }
+            ];
+            renderTabs(tabs);
+            showTab('myActivities');
+        }
+        
+        // ========== SISTEMA DE ABAS (TABS) ==========
+        function renderTabs(tabs) { /* ... (sem alterações significativas, já estava ok) ... */ 
+            console.log(" Iniciando renderTabs com:", tabs.map(t => t.id).join(', '));
+            const navTabs = document.getElementById('navTabs');
+            const tabsContent = document.getElementById('tabsContent');
+
+            if (!navTabs || !tabsContent) { console.error(" ERRO: Elementos navTabs ou tabsContent não encontrados!"); return; }
+
+            navTabs.innerHTML = tabs.map(tab => `<button class="nav-tab" onclick="showTab('${tab.id}')">${tab.title}</button>`).join('');
+            tabsContent.innerHTML = tabs.map(tab => `<div id="${tab.id}" class="tab-content"></div>`).join('');
+
+            window.tabFunctions = {};
+            tabs.forEach(tab => { window.tabFunctions[tab.id] = tab.content; });
+            console.log(" Funções das tabs armazenadas.");
+        }
+
+        function showTab(tabId) { /* ... (sem alterações significativas, já estava ok) ... */ 
+            console.log(" Iniciando showTab para tabId:", tabId);
+            document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+            const targetTabButton = document.querySelector(`.nav-tab[onclick="showTab('${tabId}')"]`);
+            if (targetTabButton) { targetTabButton.classList.add('active'); } 
+            else { console.warn(" AVISO: Botão da tab não encontrado para:", tabId); }
+            
+            const targetContent = document.getElementById(tabId);
+            if (targetContent) { targetContent.classList.add('active'); } 
+            else { console.warn(" AVISO: Elemento de conteúdo da tab não encontrado para:", tabId); return; }
+
+            if (window.tabFunctions && typeof window.tabFunctions[tabId] === 'function') {
+                console.log(" Renderizando conteúdo para tabId:", tabId);
+                try { targetContent.innerHTML = window.tabFunctions[tabId](); } 
+                catch (e) {
+                    console.error(` ERRO ao renderizar conteúdo da tab "${tabId}":`, e);
+                    targetContent.innerHTML = `<p style="color: red; font-weight: bold;">Erro ao carregar conteúdo da aba "${tabId}". Verifique o console.</p>`;
+                }
+            } else {
+                console.warn(` AVISO: Função de renderização não encontrada para tabId: "${tabId}".`);
+                targetContent.innerHTML = `<p>Conteúdo para ${tabId} não implementado ou função ausente.</p>`;
+            }
+        }
+
+        function refreshCurrentTab() { /* ... (sem alterações, já estava ok) ... */ 
+            const activeTabButton = document.querySelector('.nav-tab.active');
+            if (activeTabButton) {
+                const activeTabId = activeTabButton.getAttribute('onclick').match(/'([^']+)'/)[1];
+                if (activeTabId) { console.log("Atualizando aba:", activeTabId); showTab(activeTabId); }
+            } else { console.warn("Nenhuma aba ativa encontrada para atualizar."); }
+        }
+        
+        // ========== MODAL ==========
+        function openModal(title, contentHtml) { /* ... (sem alterações, já estava ok) ... */ 
+            console.log("Abrindo modal com título:", title);
+            const modal = document.getElementById('modal');
+            const modalInnerContent = document.getElementById('modalInnerContent');
+            
+            modalInnerContent.innerHTML = `<div class="modal-header"><h3 class="modal-title">${title}</h3><button class="close-btn" onclick="closeModal()">×</button></div>${contentHtml}`;
+            modal.classList.add('active');
+        }
+        function closeModal() { /* ... (sem alterações, já estava ok) ... */ 
+            console.log("Fechando modal.");
+            document.getElementById('modal').classList.remove('active');
+            document.getElementById('modalInnerContent').innerHTML = '';
+        }
+        function closeModalOutside(event) { if (event.target.id === 'modal') { closeModal(); } }
+
+        // ========== ADMIN: ALUNOS (QR CODE GERATION) ==========
+        function displayGeneratedQRCode(studentName, qrCodeData) {
+            const qrCodeHtml = `
+                <div style="text-align: center;">
+                    <h4>QR Code para ${studentName}</h4>
+                    <p>Guarde este QR Code. Ele será usado para o login do aluno.</p>
+                    <div id="qrcodeImageDisplay" style="width: 200px; height: 200px; margin: 20px auto; border: 1px solid #eee;"></div>
+                    <p><strong>Conteúdo do QR Code:</strong> <code>${qrCodeData}</code></p>
+                    <p style="margin-top:10px; font-size: 0.9em;">
+                        Dica: Clique com o botão direito na imagem do QR Code para salvá-la, ou tire um print.
+                    </p>
+                </div>
+            `;
+            openModal(`QR Code Gerado: ${studentName}`, qrCodeHtml);
+
+            const qrElement = document.getElementById("qrcodeImageDisplay");
+            if(qrElement) {
+                qrElement.innerHTML = ''; // Limpa o container antes de gerar novo QR
+                new QRCode(qrElement, {
+                    text: qrCodeData,
+                    width: 200,
+                    height: 200,
+                    colorDark : "#000000",
+                    colorLight : "#ffffff",
+                    correctLevel : QRCode.CorrectLevel.H
+                });
+            } else {
+                console.error("Elemento para exibir QR code gerado não encontrado.");
+            }
+        }
+
+        function showAddStudentModal() {
+            const generatedQrCodeValue = `STUDENT-${Date.now()}-${Math.random().toString(36).substring(2, 7).toUpperCase()}`;
+            const formHtml = `
+                <form onsubmit="addStudent(event)">
+                    <div class="form-group">
+                        <label for="studentName" class="form-label">Nome:</label>
+                        <input type="text" id="studentName" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="studentEmail" class="form-label">Email:</label>
+                        <input type="email" id="studentEmail" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="studentCoins" class="form-label">Coins Iniciais:</label>
+                        <input type="number" id="studentCoins" class="form-input" value="0" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">QR Code (Gerado Automaticamente):</label>
+                        <input type="text" id="studentQrCode" class="form-input" value="${generatedQrCodeValue}" readonly>
+                    </div>
+                    <button type="submit" class="btn btn-success">Salvar Aluno</button>
+                </form>
+            `;
+            openModal("Adicionar Novo Aluno", formHtml);
+        }
+
+        function addStudent(event) {
+            event.preventDefault();
+            const name = document.getElementById('studentName').value;
+            const email = document.getElementById('studentEmail').value;
+            const coins = parseInt(document.getElementById('studentCoins').value);
+            const qrCode = document.getElementById('studentQrCode').value;
+
+            if (systemData.students.some(s => s.qrCode === qrCode || s.email === email)) {
+                alert("Erro: QR Code ou Email já existem. O QR Code gerado pode ter colidido, tente novamente.");
+                return;
+            }
+            const newStudent = { id: systemData.nextStudentId++, name, email, coins, qrCode };
+            systemData.students.push(newStudent);
+            console.log("Aluno adicionado:", newStudent);
+            closeModal(); 
+            refreshCurrentTab(); 
+            displayGeneratedQRCode(newStudent.name, newStudent.qrCode); // Exibe o QR Code gerado
+        }
+        
+        // As demais funções de Alunos (renderStudentsTab, showEditStudentModal, updateStudent, showStudentQRCodeModal)
+        // permanecem como na versão anterior, pois já estavam funcionais.
+        // O showStudentQRCodeModal pode ser usado para o Admin ver o TEXTO do QR code de um aluno existente.
+        function renderStudentsTab() { /* ... (como antes) ... */ 
+            return `
+                <div class="cards-grid">
+                    <div class="card"><h3 class="card-title">➕ Adicionar Novo Aluno</h3><button class="btn" onclick="showAddStudentModal()">Adicionar Aluno</button></div>
+                </div>
+                <div class="cards-grid">
+                    ${systemData.students.map(student => `
+                        <div class="card">
+                            <h3 class="card-title">${student.name}</h3><p><strong>ID:</strong> ${student.id}</p><p><strong>Email:</strong> ${student.email}</p>
+                            <p><strong>Coins:</strong> ${student.coins}</p><p><strong>QR Code Data:</strong> <code>${student.qrCode}</code></p>
+                            <div style="margin-top: 15px;">
+                                <button class="btn" onclick="showStudentQRCodeModal('${student.name}', '${student.qrCode}')">Ver Texto QR</button>
+                                <button class="btn btn-secondary" onclick="showEditStudentModal(${student.id})">Editar</button>
+                            </div>
+                        </div>`).join('')}
+                </div>`;
+        }
+        function showEditStudentModal(studentId) { /* ... (como antes) ... */ 
+            const student = systemData.students.find(s => s.id === studentId);
+            if (!student) { alert("Aluno não encontrado!"); return; }
+            const formHtml = `
+                <form onsubmit="updateStudent(event, ${studentId})">
+                    <div class="form-group"><label for="editStudentName" class="form-label">Nome:</label><input type="text" id="editStudentName" class="form-input" value="${student.name}" required></div>
+                    <div class="form-group"><label for="editStudentEmail" class="form-label">Email:</label><input type="email" id="editStudentEmail" class="form-input" value="${student.email}" required></div>
+                    <div class="form-group"><label for="editStudentCoins" class="form-label">Coins:</label><input type="number" id="editStudentCoins" class="form-input" value="${student.coins}" min="0" required></div>
+                    <div class="form-group"><label for="editStudentQrCode" class="form-label">QR Code Data:</label><input type="text" id="editStudentQrCode" class="form-input" value="${student.qrCode}" readonly><small>Não é recomendado editar o QR Code diretamente após a criação.</small></div>
+                    <button type="submit" class="btn btn-success">Atualizar Aluno</button>
+                </form>`;
+            openModal(`Editar Aluno: ${student.name}`, formHtml);
+        }
+        function updateStudent(event, studentId) { /* ... (como antes, com validação de email/qrCode único) ... */ 
+            event.preventDefault();
+            const studentIndex = systemData.students.findIndex(s => s.id === studentId);
+            if (studentIndex === -1) { alert("Aluno não encontrado!"); return; }
+            const name = document.getElementById('editStudentName').value;
+            const email = document.getElementById('editStudentEmail').value;
+            const coins = parseInt(document.getElementById('editStudentCoins').value);
+            // const qrCode = document.getElementById('editStudentQrCode').value; // QR Code não deve ser editado facilmente.
+
+            if (systemData.students.some(s => s.id !== studentId && s.email === email)) {
+                alert("Erro: Novo Email já está em uso por outro aluno."); return;
+            }
+            systemData.students[studentIndex] = { ...systemData.students[studentIndex], name, email, coins /*, qrCode (se permitir edição) */ };
+            console.log("Aluno atualizado:", systemData.students[studentIndex]);
+            alert("Aluno atualizado!"); closeModal(); refreshCurrentTab();
+        }
+        function showStudentQRCodeModal(studentName, qrCode) { /* ... (como antes, mostra o texto) ... */ 
+             const qrHtml = `
+                <div class="qr-code-display">
+                    <h4>QR Code (Conteúdo de Dados) de ${studentName}</h4>
+                    <p><code>${qrCode}</code></p>
+                    <p style="margin-top:10px; font-size: 0.9em;">Este é o texto que está codificado no QR Code visual do aluno.</p>
+                </div>`;
+            openModal(`Conteúdo do QR Code: ${studentName}`, qrHtml);
+        }
+
+        // ========== ADMIN: ATIVIDADES, BRINDES, SOLICITAÇÕES, PERFORMANCE ==========
+        // Estas seções permanecem em grande parte como na versão anterior,
+        // pois as funcionalidades principais já estavam implementadas.
+        // Pequenos ajustes podem ter sido feitos para consistência.
+
+        function renderActivitiesTab() { /* ... (como antes) ... */ 
+            return `
+                <div class="card" style="margin-bottom: 30px;"><h3 class="card-title">➕ Nova Atividade Global</h3><button class="btn" onclick="showAddActivityModal()">Criar Atividade</button></div>
+                <div class="stats-row">
+                    <div class="stat-card"><div class="stat-number">${systemData.activities.filter(a => a.status === 'pending').length}</div><div class="stat-label">Pendentes</div></div>
+                    <div class="stat-card"><div class="stat-number">${systemData.activities.filter(a => a.status === 'completed').length}</div><div class="stat-label">Aguard. Validação</div></div>
+                    <div class="stat-card"><div class="stat-number">${systemData.activities.filter(a => a.status === 'validated').length}</div><div class="stat-label">Validadas</div></div>
+                </div>
+                ${systemData.activities.map(activity => {
+                    const student = systemData.students.find(s => s.id === activity.studentId);
+                    let statusText = 'Pendente';
+                    if (activity.status === 'completed') statusText = 'Concluída';
+                    if (activity.status === 'validated') statusText = 'Validada';
+                    return `
+                        <div class="activity-item">
+                            <div class="activity-header"><div class="activity-title">${activity.title} (ID: ${activity.id})</div><div class="activity-coins">💰 ${activity.coins} coins</div></div>
+                            <div class="activity-description">${activity.description}</div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                                <div><span class="status-badge status-${activity.status}">${statusText}</span><span style="margin-left: 10px; color: #666;">Aluno: ${student ? student.name : 'Global'}</span></div>
+                                <div>
+                                    ${activity.status === 'completed' && student ? `<button class="btn btn-success" onclick="validateActivity(${activity.id})">✅ Validar</button>` : ''}
+                                    <button class="btn btn-secondary" onclick="showEditActivityModal(${activity.id})">✏️ Editar</button><button class="btn btn-danger" onclick="deleteActivity(${activity.id})">🗑️ Excluir</button>
+                                </div></div></div>`;
+                }).join('')}`;
+        }
+        function showAddActivityModal() { /* ... (como antes) ... */ 
+            const studentOptions = systemData.students.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+            const formHtml = `
+                <form onsubmit="addActivity(event)">
+                    <div class="form-group"><label for="activityTitle" class="form-label">Título:</label><input type="text" id="activityTitle" class="form-input" required></div>
+                    <div class="form-group"><label for="activityDescription" class="form-label">Descrição:</label><textarea id="activityDescription" class="form-textarea" required></textarea></div>
+                    <div class="form-group"><label for="activityCoins" class="form-label">Coins:</label><input type="number" id="activityCoins" class="form-input" min="0" required></div>
+                    <div class="form-group"><label for="activityStudentId" class="form-label">Atribuir ao Aluno (Opcional):</label><select id="activityStudentId" class="form-select"><option value="">Global</option>${studentOptions}</select></div>
+                    <button type="submit" class="btn btn-success">Criar Atividade</button>
+                </form>`;
+            openModal("Criar Nova Atividade", formHtml);
+        }
+        function addActivity(event) { /* ... (como antes) ... */ 
+            event.preventDefault();
+            const title = document.getElementById('activityTitle').value;
+            const description = document.getElementById('activityDescription').value;
+            const coins = parseInt(document.getElementById('activityCoins').value);
+            const studentIdValue = document.getElementById('activityStudentId').value;
+            const studentId = studentIdValue ? parseInt(studentIdValue) : null;
+            const newActivity = { id: systemData.nextActivityId++, title, description, coins, studentId, status: 'pending' };
+            systemData.activities.push(newActivity); alert("Atividade criada!"); closeModal(); refreshCurrentTab();
+        }
+        function showEditActivityModal(activityId) { /* ... (como antes) ... */
+            const activity = systemData.activities.find(a => a.id === activityId);
+            if (!activity) { alert("Atividade não encontrada!"); return; }
+            const studentOptions = systemData.students.map(s => `<option value="${s.id}" ${activity.studentId === s.id ? 'selected' : ''}>${s.name}</option>`).join('');
+            const formHtml = `
+                <form onsubmit="updateActivity(event, ${activityId})">
+                    <div class="form-group"><label for="editActivityTitle" class="form-label">Título:</label><input type="text" id="editActivityTitle" class="form-input" value="${activity.title}" required></div>
+                    <div class="form-group"><label for="editActivityDescription" class="form-label">Descrição:</label><textarea id="editActivityDescription" class="form-textarea" required>${activity.description}</textarea></div>
+                    <div class="form-group"><label for="editActivityCoins" class="form-label">Coins:</label><input type="number" id="editActivityCoins" class="form-input" value="${activity.coins}" min="0" required></div>
+                    <div class="form-group"><label for="editActivityStudentId" class="form-label">Aluno:</label><select id="editActivityStudentId" class="form-select"><option value="" ${!activity.studentId ? 'selected' : ''}>Global</option>${studentOptions}</select></div>
+                    <div class="form-group"><label for="editActivityStatus" class="form-label">Status:</label><select id="editActivityStatus" class="form-select">
+                        <option value="pending" ${activity.status === 'pending' ? 'selected' : ''}>Pendente</option><option value="completed" ${activity.status === 'completed' ? 'selected' : ''}>Concluída</option><option value="validated" ${activity.status === 'validated' ? 'selected' : ''}>Validada</option>
+                    </select></div><button type="submit" class="btn btn-success">Atualizar</button>
+                </form>`;
+            openModal(`Editar Atividade: ${activity.title}`, formHtml);
+         }
+        function updateActivity(event, activityId) { /* ... (como antes) ... */ 
+            event.preventDefault();
+            const activityIndex = systemData.activities.findIndex(a => a.id === activityId);
+            if (activityIndex === -1) { alert("Atividade não encontrada!"); return; }
+            const title = document.getElementById('editActivityTitle').value;
+            const description = document.getElementById('editActivityDescription').value;
+            const coins = parseInt(document.getElementById('editActivityCoins').value);
+            const studentIdValue = document.getElementById('editActivityStudentId').value;
+            const studentId = studentIdValue ? parseInt(studentIdValue) : null;
+            const status = document.getElementById('editActivityStatus').value;
+            systemData.activities[activityIndex] = { ...systemData.activities[activityIndex], title, description, coins, studentId, status };
+            alert("Atividade atualizada!"); closeModal(); refreshCurrentTab();
+        }
+        function deleteActivity(activityId) { /* ... (como antes) ... */ 
+             if (confirm("Excluir esta atividade?")) {
+                systemData.activities = systemData.activities.filter(a => a.id !== activityId);
+                alert("Atividade excluída!"); refreshCurrentTab();
+            }
+        }
+        function validateActivity(activityId) { /* ... (como antes) ... */ 
+            const activityIndex = systemData.activities.findIndex(a => a.id === activityId);
+            if (activityIndex === -1) { alert("Atividade não encontrada!"); return; }
+            const activity = systemData.activities[activityIndex];
+            if (activity.status !== 'completed') { alert("Apenas atividades concluídas podem ser validadas."); return; }
+            const studentIndex = systemData.students.findIndex(s => s.id === activity.studentId);
+            if (studentIndex !== -1) { systemData.students[studentIndex].coins += activity.coins; }
+            systemData.activities[activityIndex].status = 'validated';
+            alert("Atividade validada e coins creditadas!"); refreshCurrentTab();
+        }
+        
+        function renderGiftsTab() { /* ... (como antes) ... */
+            return `
+                <div class="card" style="margin-bottom: 30px;"><h3 class="card-title">➕ Novo Brinde</h3><button class="btn" onclick="showAddGiftModal()">Adicionar Brinde</button></div>
+                ${systemData.gifts.map(gift => `
+                    <div class="gift-card">
+                        <div class="gift-image">${gift.image}</div>
+                        <div class="gift-info">
+                            <div class="gift-name">${gift.name} (ID: ${gift.id})</div><div class="gift-price">${gift.price} coins</div><div class="gift-stock">Estoque: ${gift.stock}</div>
+                            <div style="margin-top: 15px;"><button class="btn btn-secondary" onclick="showEditGiftModal(${gift.id})">✏️ Editar</button><button class="btn btn-danger" onclick="deleteGift(${gift.id})">🗑️ Excluir</button></div>
+                        </div></div>`).join('')}`;
+        }
+        function showAddGiftModal() { /* ... (como antes) ... */ 
+            const formHtml = `
+                <form onsubmit="addGift(event)">
+                    <div class="form-group"><label for="giftName" class="form-label">Nome:</label><input type="text" id="giftName" class="form-input" required></div>
+                    <div class="form-group"><label for="giftPrice" class="form-label">Preço (coins):</label><input type="number" id="giftPrice" class="form-input" min="0" required></div>
+                    <div class="form-group"><label for="giftStock" class="form-label">Estoque:</label><input type="number" id="giftStock" class="form-input" min="0" required></div>
+                    <div class="form-group"><label for="giftImage" class="form-label">Imagem (Emoji):</label><input type="text" id="giftImage" class="form-input" value="🎁" required></div>
+                    <button type="submit" class="btn btn-success">Adicionar Brinde</button>
+                </form>`;
+            openModal("Adicionar Novo Brinde", formHtml);
+        }
+        function addGift(event) { /* ... (como antes) ... */ 
+            event.preventDefault();
+            const name = document.getElementById('giftName').value;
+            const price = parseInt(document.getElementById('giftPrice').value);
+            const stock = parseInt(document.getElementById('giftStock').value);
+            const image = document.getElementById('giftImage').value;
+            const newGift = { id: systemData.nextGiftId++, name, price, stock, image };
+            systemData.gifts.push(newGift); alert("Brinde adicionado!"); closeModal(); refreshCurrentTab();
+        }
+        function showEditGiftModal(giftId) { /* ... (como antes) ... */ 
+            const gift = systemData.gifts.find(g => g.id === giftId);
+            if (!gift) { alert("Brinde não encontrado!"); return; }
+            const formHtml = `
+                <form onsubmit="updateGift(event, ${giftId})">
+                    <div class="form-group"><label for="editGiftName" class="form-label">Nome:</label><input type="text" id="editGiftName" class="form-input" value="${gift.name}" required></div>
+                    <div class="form-group"><label for="editGiftPrice" class="form-label">Preço:</label><input type="number" id="editGiftPrice" class="form-input" value="${gift.price}" min="0" required></div>
+                    <div class="form-group"><label for="editGiftStock" class="form-label">Estoque:</label><input type="number" id="editGiftStock" class="form-input" value="${gift.stock}" min="0" required></div>
+                    <div class="form-group"><label for="editGiftImage" class="form-label">Imagem:</label><input type="text" id="editGiftImage" class="form-input" value="${gift.image}" required></div>
+                    <button type="submit" class="btn btn-success">Atualizar</button>
+                </form>`;
+            openModal(`Editar Brinde: ${gift.name}`, formHtml);
+        }
+        function updateGift(event, giftId) { /* ... (como antes) ... */ 
+            event.preventDefault();
+            const giftIndex = systemData.gifts.findIndex(g => g.id === giftId);
+            if (giftIndex === -1) { alert("Brinde não encontrado!"); return; }
+            const name = document.getElementById('editGiftName').value;
+            const price = parseInt(document.getElementById('editGiftPrice').value);
+            const stock = parseInt(document.getElementById('editGiftStock').value);
+            const image = document.getElementById('editGiftImage').value;
+            systemData.gifts[giftIndex] = { ...systemData.gifts[giftIndex], name, price, stock, image };
+            alert("Brinde atualizado!"); closeModal(); refreshCurrentTab();
+        }
+        function deleteGift(giftId) { /* ... (como antes) ... */ 
+            if (confirm("Excluir este brinde?")) {
+                systemData.gifts = systemData.gifts.filter(g => g.id !== giftId);
+                alert("Brinde excluído!"); refreshCurrentTab();
+            }
+        }
+
+        function renderRequestsTab() { /* ... (como antes, com melhorias de layout) ... */ 
+            const pending = systemData.redeemRequests.filter(r => r.status === 'pending');
+            const others = systemData.redeemRequests.filter(r => r.status !== 'pending').sort((a,b) => new Date(b.date) - new Date(a.date));
+            let html = `<div class="card"><h3 class="card-title">🔔 Solicitações Pendentes</h3>`;
+            if (pending.length === 0) { html += '<p>Nenhuma pendente.</p>'; } 
+            else { html += pending.map(req => `
+                <div class="activity-item"><div class="activity-header"><div class="activity-title">${req.giftName} (ID: ${req.id})</div><div class="activity-coins">👤 ${req.studentName}</div></div>
+                <p>Data: ${new Date(req.date).toLocaleDateString('pt-BR')}</p>
+                <div style="margin-top: 15px;"><button class="btn btn-success" onclick="approveRedeem(${req.id})">✅ Aprovar</button><button class="btn btn-danger" onclick="rejectRedeem(${req.id})">❌ Rejeitar</button></div>
+                </div>`).join(''); }
+            html += `</div><div class="card" style="margin-top:30px;"><h3 class="card-title">📜 Histórico</h3>`;
+            if (others.length === 0) { html += '<p>Nenhum histórico.</p>'; }
+            else { html += others.map(req => `<div class="activity-item"><div class="activity-header"><div class="activity-title">${req.giftName}</div><div class="activity-coins">👤 ${req.studentName}</div></div>
+                <p>Data: ${new Date(req.date).toLocaleDateString('pt-BR')}</p><p><span class="status-badge status-${req.status}">${req.status === 'approved' ? 'Aprovado' : 'Rejeitado'}</span></p></div>`).join(''); }
+            html += `</div>`; return html;
+        }
+        function approveRedeem(requestId) { /* ... (como antes) ... */ 
+            const reqIdx = systemData.redeemRequests.findIndex(r => r.id === requestId);
+            if (reqIdx === -1) { alert("Solicitação não encontrada!"); return; }
+            systemData.redeemRequests[reqIdx].status = 'approved';
+            alert("Solicitação aprovada!"); refreshCurrentTab();
+        }
+        function rejectRedeem(requestId) { /* ... (como antes, com devolução de moedas/estoque) ... */ 
+            const reqIdx = systemData.redeemRequests.findIndex(r => r.id === requestId);
+            if (reqIdx === -1) { alert("Solicitação não encontrada!"); return; }
+            const request = systemData.redeemRequests[reqIdx];
+            const student = systemData.students.find(s => s.id === request.studentId);
+            const gift = systemData.gifts.find(g => g.id === request.giftId);
+            if (student && gift) { student.coins += gift.price; gift.stock += 1; }
+            systemData.redeemRequests[reqIdx].status = 'rejected';
+            alert("Solicitação rejeitada. Moedas e estoque devolvidos."); refreshCurrentTab();
+        }
+        
+        function renderPerformanceTab() { /* ... (como antes) ... */ 
+            const totalActivities = systemData.activities.length;
+            const coinsWithStudents = systemData.students.reduce((acc, s) => acc + s.coins, 0);
+            const validated = systemData.activities.filter(a => a.status === 'validated').length;
+            const rate = totalActivities > 0 ? ((validated / totalActivities) * 100).toFixed(1) : 0;
+            return `
+                <div class="card"><h3 class="card-title">📊 Filtros (Não Implementado)</h3><p>Filtros avançados ainda não disponíveis.</p></div>
+                <div class="stats-row">
+                    <div class="stat-card"><div class="stat-number">${totalActivities}</div><div class="stat-label">Atividades Criadas</div></div>
+                    <div class="stat-card"><div class="stat-number">${coinsWithStudents}</div><div class="stat-label">Coins com Alunos</div></div>
+                    <div class="stat-card"><div class="stat-number">${validated}</div><div class="stat-label">Atividades Validadas</div></div>
+                    <div class="stat-card"><div class="stat-number">${rate}%</div><div class="stat-label">Taxa de Validação</div></div>
+                </div>`;
+        }
+
+        // ========== ALUNO: MINHAS ATIVIDADES, LOJA, MEUS PEDIDOS, PERFIL ==========
+        // Estas seções permanecem em grande parte como na versão anterior.
+        
+        function renderMyActivitiesTab() { /* ... (como antes) ... */ 
+            const student = systemData.currentUser;
+            if (!student) return "<p>Erro: Aluno não logado.</p>";
+            const myActivities = systemData.activities.filter(a => a.studentId === student.id || a.studentId === null);
+            if (myActivities.length === 0) return "<p>Nenhuma atividade disponível.</p>";
+            return myActivities.map(activity => {
+                let statusText = 'Pendente'; let actions = '';
+                if (activity.status === 'completed' && activity.studentId === student.id) { statusText = 'Concluída'; actions = `<span class="status-badge status-completed">Aguardando Validação</span>`; }
+                else if (activity.status === 'validated' && activity.studentId === student.id) { statusText = 'Validada'; actions = `<span class="status-badge status-validated">Validada!</span>`; }
+                else if (activity.status === 'pending') { actions = `<button class="btn btn-success" onclick="markAsCompleted(${activity.id})">🏁 Marcar Concluída</button>`; }
+                // Lógica para atividades globais já concluídas por este aluno precisaria de mais dados.
+                return `
+                    <div class="activity-item"><div class="activity-header"><div class="activity-title">${activity.title}</div><div class="activity-coins">💰 ${activity.coins} coins</div></div>
+                    <div class="activity-description">${activity.description}</div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span class="status-badge status-${activity.studentId === student.id ? activity.status : 'pending'}">${activity.studentId === student.id ? statusText : 'Pendente (Global)'}</span>
+                        ${actions}</div></div>`;
+            }).join('');
+        }
+        function markAsCompleted(activityId) { /* ... (como antes, com atribuição de ID de aluno se for global) ... */ 
+            const student = systemData.currentUser;
+            const activityIndex = systemData.activities.findIndex(a => a.id === activityId);
+            if (activityIndex === -1 || !student) { alert("Erro ao marcar atividade."); return; }
+            const activity = systemData.activities[activityIndex];
+            if (activity.studentId === null) { systemData.activities[activityIndex].studentId = student.id; } // Associa se for global
+            else if (activity.studentId !== student.id) { alert("Atividade não atribuída a você."); return; }
+            systemData.activities[activityIndex].status = 'completed';
+            alert("Atividade marcada como concluída! Aguarde validação."); refreshCurrentTab();
+        }
+
+        function renderStoreTab() { /* ... (como antes) ... */ 
+            const student = systemData.currentUser; if (!student) return "<p>Erro.</p>";
+            if (systemData.gifts.length === 0) return "<p>Nenhum brinde na loja.</p>";
+            return systemData.gifts.map(gift => `
+                <div class="gift-card"><div class="gift-image">${gift.image}</div><div class="gift-info">
+                <div class="gift-name">${gift.name}</div><div class="gift-price">${gift.price} coins</div><div class="gift-stock">Estoque: ${gift.stock > 0 ? gift.stock : 'Esgotado'}</div>
+                <div style="margin-top: 10px;">
+                ${gift.stock > 0 && student.coins >= gift.price ? `<button class="btn" onclick="requestRedeem(${gift.id})">🛒 Solicitar</button>` : (gift.stock === 0 ? '<span style="color:red;">Esgotado</span>' : (student.coins < gift.price ? `<span style="color:orange;">Coins insuficientes</span>` : ''))}
+                </div></div></div>`).join('');
+        }
+        function requestRedeem(giftId) { /* ... (como antes) ... */
+            const student = systemData.currentUser; const gift = systemData.gifts.find(g => g.id === giftId);
+            if (!student || !gift) { alert("Erro: Aluno ou brinde não encontrado."); return; }
+            if (gift.stock <= 0) { alert("Brinde esgotado."); return; }
+            if (student.coins < gift.price) { alert("Coins insuficientes."); return; }
+            if (confirm(`Solicitar ${gift.name} por ${gift.price} coins?`)) {
+                student.coins -= gift.price; gift.stock -= 1;
+                const newRequest = { id: systemData.nextRedeemRequestId++, studentId: student.id, studentName: student.name, giftId: gift.id, giftName: gift.name, status: 'pending', date: new Date().toISOString() };
+                systemData.redeemRequests.push(newRequest);
+                alert("Solicitação enviada! Acompanhe em 'Meus Pedidos'.");
+                document.getElementById('userInfo').innerHTML = `<span>Olá, ${student.name}!</span><div class="coins">💰 ${student.coins} coins</div>`;
+                refreshCurrentTab();
+            }
+        }
+        
+        function renderMyRequestsTab() { /* ... (como antes) ... */ 
+            const student = systemData.currentUser; if (!student) return "<p>Erro.</p>";
+            const myRequests = systemData.redeemRequests.filter(r => r.studentId === student.id).sort((a,b) => new Date(b.date) - new Date(a.date));
+            if (myRequests.length === 0) return "<p>Nenhuma solicitação feita.</p>";
+            return myRequests.map(req => `
+                <div class="activity-item"><div class="activity-header"><div class="activity-title">Pedido: ${req.giftName}</div>
+                <span class="status-badge status-${req.status}">${req.status === 'pending' ? 'Pendente' : (req.status === 'approved' ? 'Aprovado' : 'Rejeitado')}</span></div>
+                <p>Data: ${new Date(req.date).toLocaleDateString('pt-BR')}</p>
+                ${req.status === 'rejected' ? '<p style="color:red;">Moedas e estoque restaurados.</p>' : ''}</div>`).join('');
+        }
+
+        function renderProfileTab() { /* ... (como antes) ... */ 
+            const student = systemData.currentUser; if (!student) return "<p>Erro.</p>";
+            return `
+                <div class="card"><h3 class="card-title">Meu Perfil</h3>
+                <p><strong>Nome:</strong> ${student.name}</p><p><strong>Email:</strong> ${student.email}</p>
+                <p><strong>Coins:</strong> ${student.coins}</p><p><strong>QR Code Data:</strong> <code>${student.qrCode}</code></p>
+                <div style="margin-top: 20px;">
+                    <button class="btn" onclick="showEditProfileModal()">✏️ Editar Email</button>
+                    <button class="btn btn-secondary" onclick="displayGeneratedQRCode('${student.name} (Meu QR Code)', '${student.qrCode}')">📱 Ver Meu QR Code Visual</button>
+                </div></div>`;
+        }
+        function showEditProfileModal() { /* ... (como antes) ... */ 
+            const student = systemData.currentUser; if (!student) return;
+            const formHtml = `
+                <form onsubmit="updateProfile(event)"><p>Nome: ${student.name}</p>
+                <div class="form-group" style="margin-top:15px;"><label for="profileEmail" class="form-label">Novo Email:</label><input type="email" id="profileEmail" class="form-input" value="${student.email}" required></div>
+                <button type="submit" class="btn btn-success">Salvar Email</button></form>`;
+            openModal("Editar Email do Perfil", formHtml);
+        }
+        function updateProfile(event) { /* ... (como antes, com validação de email único) ... */ 
+            event.preventDefault();
+            const student = systemData.currentUser; const studentIndex = systemData.students.findIndex(s => s.id === student.id);
+            if (studentIndex === -1) { alert("Erro: Aluno não encontrado."); return; }
+            const newEmail = document.getElementById('profileEmail').value;
+            if (!newEmail.includes('@')) { alert("Email inválido."); return; }
+            if (systemData.students.some(s => s.id !== student.id && s.email === newEmail)) { alert("Erro: Email já em uso."); return; }
+            systemData.students[studentIndex].email = newEmail; systemData.currentUser.email = newEmail;
+            alert("Email atualizado!"); closeModal(); refreshCurrentTab();
+        }
+
+    </script>
+</body>
+</html>
